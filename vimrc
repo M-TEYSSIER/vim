@@ -1,25 +1,26 @@
 " Maxime TEYSSIER
-" Etudiant Licence Professionnel RT IoT
+" Étudiant Licence Professionnel RT IoT
 "
 " TP  VIM
 "
 "
 " Ce vimrc est pour l'instant largement bon pour mes attentes. Je ne maitrise
-" pas encore tout l'environmment de mes plugins. 
+" pas encore tout l'environnement de mes plugins.
 " Beaucoup son graphique ( lightline, vim-gitbranch,YCM) ainsi je me repère
 " plus facilement dans mes fichiers lancés.
 " Vundle me permet de ne pas avoir à placer tout les repo git des autres
 " plugin, il les recherchent et les installent seul, via la commande
 " :PluginInstall
 " vim-fugitive me donne accès aux fonctionnalités de git rapidement. Même si
-" je privilegie un programme pour une fonction. (Vim=Editeur != Git.) Mais la
+" je privilégie un programme pour une fonction. (Vim=Éditeur != Git.) Mais la
 " rapidité est utile.
 "
 
 
 
 set nocompatible             " Enlève la compatibilité avec l'ancienne version
-filetype off                 " Evite la détéction de filetype
+filetype off                 " Évite la détection de filetype
+syntax on
 
 
 " ---- Installation de plugin
@@ -31,8 +32,16 @@ Plugin 'VundleVim/Vundle.vim'                   " Pluging Installateur de plugin
 Plugin 'itchyny/lightline.vim'                  " Plugin pour la barre d'information 
 Plugin 'itchyny/vim-gitbranch'                  " Plugin pour ajouter des fonctionnalité git sur la barre 
 Plugin 'scrooloose/nerdtree'                    " Plugin pour l'arborescence du système
-Plugin 'tpope/vim-fugitive'                     " Plugin pour gerer les fonctionnalité git dans VIM
-Plugin 'Valloric/YouCompleteMe'                 " Plugin est un moteur de complétion de code
+Plugin 'tpope/vim-fugitive'                     " Plugin pour gérer les fonctionnalité git dans VIM
+Plugin 'mcmartelle/vim-monokai-bold'            " Thème
+Plugin 'vim-scripts/indentpython.vim'           " Auto indentation 
+Plugin 'thaerkh/vim-workspace'                  " Latex; Auto sauvegarde
+Plugin 'thaerkh/vim-indentguides'               " Vim; Affichage de tiret pour connaître le niveau d'indentation
+Plugin 'dpelle/vim-Grammalecte'                 " Correcteur grammatical
+Plugin 'xuhdev/vim-latex-live-preview'          " Previewer LaTeX
+
+
+
 
 call vundle#end()                                       
 filetype plugin indent on    
@@ -42,10 +51,11 @@ filetype plugin indent on
 
 " ----CONFIGURATION
 
-set history=1000				" L'historique est augmenté à 1000 commandes executées
+colorscheme monokai-bold
+set history=1000				" L'historique est augmenté à 1000 commandes exécutées
 set number					" Affiche le numéro de la ligne
 set scrolloff=5 				" Permet d'afficher durant un scrolling 5 lignes préc/suiv au curseur
-set autoread					" Execute une relecture du fichier s'il a été modifié via l'exterieur
+set autoread					" Execute une relecture du fichier s'il a été modifié via l'extérieur
 set wildmenu				        " Active le menu de complétion 
 set wildmode=longest:full,full
 set mouse=a					" Utilisation de la souris
@@ -68,7 +78,7 @@ nnoremap <C-RIGHT> :bnext<CR>			" Re-map la commande :bnext avec le combo CTRL+f
 nnoremap <C-LEFT>  :bprev<CR>			" Re-map la commande :bprev avec le combo CTRL+flecheGauche
 
 " ---- 
-set laststatus=2                                " Affiche la barre du bas constament
+set laststatus=2                                " Affiche la barre du bas constamment
 
 " En dessous, voici la personnalisation de la barre. 'left' représente les
 " modules affichés sur la gauche de la barre. Et 'right' les modules à droite
@@ -90,15 +100,41 @@ let g:lightline = {
       \ },
       \ }
 
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
 
 
-let g:ycm_python_interpreter_path = ''          
-let g:ycm_python_sys_path = []
-let g:ycm_extra_conf_vim_data = [
-  \  'g:ycm_python_interpreter_path',
-  \  'g:ycm_python_sys_path'
-  \]
-let g:ycm_python_binary_path = 'python'
-let g:ycm_key_list_select_completion=[]
-let g:ycm_key_list_previous_completion=[]
-let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
+" LATEX
+let g:workspace_persist_undo_history = 1  " enabled = 1 (default), disabled = 0
+let g:workspace_undodir='.undodir'
+let g:workspace_autosave_always = 1 "let g:workspace_autosave = 0 <- Désactiver
+
+" Indentation style
+let g:indentguides_spacechar = '┆'
+let g:indentguides_tabchar = '|'
+
+" Correcteur orthographique (non grammatical)
+setlocal spell
+setlocal spelllang=fr,en
+setlocal spellfile=$HOME/.vim/spell/fr.utf-8.add,$HOME/.vim/spell/en.utf-8.add
+" Adouci les couleurs du correcteur
+ hi clear SpellBad
+ hi clear SpellCap
+ hi clear SpellRare
+ hi clear SpellLocal
+ hi SpellBad   cterm=underline ctermfg=9  ctermbg=0 gui=undercurl
+ hi SpellCap   cterm=underline ctermfg=14 ctermbg=0 gui=undercurl
+ hi SpellRare  cterm=underline ctermfg=13 ctermbg=0 gui=undercurl
+ hi SpellLocal cterm=underline ctermfg=11 ctermbg=0 gui=undercurl
+
+" mapleader est la touche/combinaison qui permet d'appeler le correcteur
+let mapleader=' '
+nnoremap <Leader>ts :setlocal spell! spell?<Return>
+
+" Correcteur grammatical
+let g:grammalecte_cli_py='/home/mteyssier/.vim/plugin/grammalecte-cli.py'
+
+" Previewer 4 LaTeX
+let g:livepreview_previewer = 'evince'
